@@ -5,8 +5,7 @@ Data, code, figures and manuscript files for the article submitted to *Land*
 (MDPI). Every value reported in the manuscript and in the supplementary material
 can be recomputed from this repository.
 
-- Repository: [GitHub URL ...]
-- Archived release: [Zenodo DOI ...]
+- Repository: (https://github.com/manaciff/Nacif_et_al_Land_Landscape_dynamics_and_conservation_policy_effectiveness_in_reservoir_riparian_buff.git)
 
 ---
 
