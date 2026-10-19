@@ -1,6 +1,5 @@
-# Landscape dynamics and conservation policy effectiveness in reservoir riparian buffers
+# Landscape dynamics and conservation policy effectiveness in reservoir riparian buffers: fourteen reservoirs under Brazil’s Forest Code, 1985 to 2024
 
-Fourteen reservoirs under Brazil's Forest Code, 1985 to 2024.
 
 Data, code, figures and manuscript files for the article submitted to *Land*
 (MDPI). Every value reported in the manuscript and in the supplementary material
