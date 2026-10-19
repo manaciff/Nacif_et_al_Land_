@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+title: >-
+  Landscape dynamics and conservation policy effectiveness in reservoir riparian
+  buffers: fourteen reservoirs under Brazil's Forest Code, 1985 to 2024
+message: Please cite the article rather than this repository alone.
+type: dataset
+authors:
+  - given-names: Maria Eduarda Machado Macedo
+    family-names: Nacif
+    email: manaciff@gmail.com
+    affiliation: Universidade Estadual do Norte Fluminense Darcy Ribeiro (UENF)
+    orcid: "https://orcid.org/0009-0009-6975-1615"
+  - given-names: Luciana
+    family-names: Vidal
+  - given-names: Vinícius Santos
+    family-names: Lima
+# Add the remaining authors, the affiliations of the co-authors, and, once the
+# release is archived, the fields doi, repository-code and version.
+abstract: >-
+  Data and code for an eight-benchmark assessment of forest cover and landscape
+  configuration in a 0 to 100 m band around fourteen reservoirs in Rio de
+  Janeiro State, Brazil, compared with a 100 to 500 m control band of the same
+  reservoirs. Four pre-reform benchmarks test, rather than assume, the
+  parallel-trends assumption.
+keywords:
+  - Permanent Preservation Areas
+  - Brazilian Forest Code
+  - event study
+  - riparian vegetation
+  - landscape ecology
+  - Cadastro Ambiental Rural
+  - Atlantic Forest
+  - reservoirs
+license: MIT
+date-released: 2026-08-19

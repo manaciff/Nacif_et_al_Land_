@@ -1,0 +1,21 @@
+"band","class","median_pct_of_band"
+"0-30 m","Forest",12.1
+"0-30 m","Non-forest natural formation",0
+"0-30 m","Farming and pasture",41
+"0-30 m","Non-vegetated area",0.2
+"0-30 m","Water",37.7
+"30-100 m","Forest",20.5
+"30-100 m","Non-forest natural formation",0
+"30-100 m","Farming and pasture",53.9
+"30-100 m","Non-vegetated area",0.2
+"30-100 m","Water",11.6
+"0-100 m","Forest",17.2
+"0-100 m","Non-forest natural formation",0
+"0-100 m","Farming and pasture",51.9
+"0-100 m","Non-vegetated area",0.2
+"0-100 m","Water",20.2
+"100-500 m","Forest",26.7
+"100-500 m","Non-forest natural formation",0
+"100-500 m","Farming and pasture",64.5
+"100-500 m","Non-vegetated area",0.2
+"100-500 m","Water",1.4

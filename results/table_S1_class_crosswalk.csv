@@ -1,0 +1,39 @@
+Analytical class (code),MapBiomas code,MapBiomas class name,Rationale
+Forest (4),1,Forest (parent class),Aggregated as native forest
+Forest (4),3,Forest Formation,Closed-canopy native forest
+Forest (4),4,Savanna Formation,Native woody formation
+Forest (4),5,Mangrove,"Native forest, coastal"
+Forest (4),6,Floodable Forest,"Native forest, seasonally flooded"
+Forest (4),49,Wooded Sandbank Vegetation,Native woody restinga
+Herbaceous and shrub vegetation (5),10,Herbaceous and Shrubby Vegetation (parent),Open native vegetation
+Herbaceous and shrub vegetation (5),11,Wetland,"Native, non-forest"
+Herbaceous and shrub vegetation (5),12,Grassland,"Native, non-forest"
+Herbaceous and shrub vegetation (5),13,Other Non-Forest Formations,"Native, non-forest"
+Herbaceous and shrub vegetation (5),50,Herbaceous Sandbank Vegetation,"Native, non-forest"
+Farming and pasture (15),9,Forest Plantation,"Silviculture is land use, not native cover"
+Farming and pasture (15),14,Farming (parent class),Anthropic use
+Farming and pasture (15),15,Pasture,Anthropic use
+Farming and pasture (15),18,Agriculture,Anthropic use
+Farming and pasture (15),19,Temporary Crop,Anthropic use
+Farming and pasture (15),20,Sugar cane,Anthropic use
+Farming and pasture (15),21,Mosaic of Uses,Anthropic use
+Farming and pasture (15),35,Palm Oil,Anthropic use
+Farming and pasture (15),36,Perennial Crop,Anthropic use
+Farming and pasture (15),39,Soybean,Anthropic use
+Farming and pasture (15),40,Rice,Anthropic use
+Farming and pasture (15),41,Other Temporary Crops,Anthropic use
+Farming and pasture (15),46,Coffee,Anthropic use
+Farming and pasture (15),47,Citrus,Anthropic use
+Farming and pasture (15),48,Other Perennial Crops,Anthropic use
+Farming and pasture (15),62,Cotton,Anthropic use
+Non-vegetated area (22),22,Non-vegetated Area (parent),Bare or impervious
+Non-vegetated area (22),23,"Beach, Dune and Sand Spot","Bare, natural"
+Non-vegetated area (22),24,Urban Area,"Impervious, anthropic"
+Non-vegetated area (22),25,Other Non-Vegetated Areas,Bare or impervious
+Non-vegetated area (22),29,Rocky Outcrop,"Bare, natural"
+Non-vegetated area (22),30,Mining,"Impervious, anthropic"
+Non-vegetated area (22),32,Hypersaline Tidal Flat,"Bare, natural"
+Water (30),26,Water (parent class),Aquatic surface
+Water (30),31,Aquaculture,Aquatic surface
+Water (30),33,"River, Lake and Ocean",Aquatic surface
+Water (30),37,Aquaculture (current code),Aquatic surface

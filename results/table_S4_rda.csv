@@ -1,0 +1,5 @@
+"Component","R2","Adjusted R2","p (restricted permutation)"
+"Reservoir identity",0.6597,0.6459,"not applicable"
+"Distance band | reservoir",0.2322,0.2409,"< 0.001"
+"Period | reservoir",0.0049,0.0041,"0.0206"
+"Band x period | main effects",3e-04,-4e-04,"1.0000"

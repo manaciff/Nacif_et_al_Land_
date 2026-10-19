@@ -1,0 +1,4 @@
+"test","statistic","p","n"
+"Spearman, log10(surface) against the 2024 coefficient",0.353846153846154,0.214890520556095,14
+"Mann-Whitney, above against below median surface",28,0.71037296037296,14
+"Spearman, log10(surface) against the native-vegetation deficit",-0.142857142857143,0.626627046051523,14
