@@ -94,6 +94,7 @@ set.seed(SEED)
 #
 # Keep 4,999 for publication. While exploring, 999 is sufficient.
 N_PERM <- 4999
+PIXEL_HA_RDA <- 0.09   # one 30 m cell, in hectares
 
 # =============================================================================
 # 1. RESPONSE MATRIX
@@ -173,6 +174,56 @@ message(sprintf("\n  full model adj. R2 = %.4f | residual = %.4f",
 write.csv(components, file.path(DIR_RESULTS, "table_S4_rda.csv"),
           row.names = FALSE)
 message("\n  -> table_S4_rda.csv")
+
+# =============================================================================
+# 2b. SENSITIVITY: CENTRED LOG-RATIO TRANSFORMATION (added during revision)
+# =============================================================================
+# The Hellinger transformation was chosen because it handles the zeros of a
+# composition in which some classes are absent from a band, and because it
+# keeps RDA, a Euclidean method, applicable to proportions. The log-ratio
+# approach of compositional data analysis is the main alternative, but it is
+# undefined at zero. Zeros are replaced multiplicatively, at 65% of the share of
+# one 30 m cell in the band (the detection limit of the data), the other parts
+# are rescaled so that each row still sums to one, and the centred log-ratio is
+# taken. The same four components are then fitted.
+P <- Y / rowSums(Y)
+delta <- 0.65 * PIXEL_HA_RDA / rowSums(Y)
+P_rep <- t(sapply(seq_len(nrow(P)), function(i) {
+  p <- P[i, ]; z <- p == 0
+  p[z] <- delta[i]
+  p[!z] <- p[!z] * (1 - sum(z) * delta[i])
+  p
+}))
+Y_clr <- log(P_rep) - rowMeans(log(P_rep))
+
+fit_clr <- function(formula, label, test_p = TRUE) {
+  model <- rda(formula, data = env)
+  r2 <- RsquareAdj(model)
+  p <- NA_real_
+  if (test_p) {
+    set.seed(SEED)
+    p <- anova.cca(model, permutations = ctrl)$`Pr(>F)`[1]
+  }
+  data.frame(Component = label,
+             R2 = round(r2$r.squared, 4),
+             `Adjusted R2` = round(r2$adj.r.squared, 4),
+             `p (restricted permutation)` =
+               if (is.na(p)) "not applicable"
+               else if (p <= 1 / (N_PERM + 1)) "< 0.001"
+               else sprintf("%.4f", p),
+             check.names = FALSE, stringsAsFactors = FALSE)
+}
+components_clr <- rbind(
+  fit_clr(Y_clr ~ reservoir, "Reservoir identity", test_p = FALSE),
+  fit_clr(Y_clr ~ band + Condition(reservoir), "Distance band | reservoir"),
+  fit_clr(Y_clr ~ period + Condition(reservoir), "Period | reservoir"),
+  fit_clr(Y_clr ~ band:period + Condition(reservoir + band + period),
+          "Band x period | main effects"))
+write.csv(components_clr, file.path(DIR_RESULTS, "table_S4_rda_clr.csv"),
+          row.names = FALSE)
+message("\nSensitivity, centred log-ratio:")
+print(components_clr, row.names = FALSE)
+message("  -> table_S4_rda_clr.csv")
 
 # =============================================================================
 # 3. VARIATION PARTITIONING

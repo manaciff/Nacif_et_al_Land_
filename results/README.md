@@ -24,8 +24,13 @@ README.
 | `table_S3_by_reservoir.csv` | `02_tests.R` | coefficient and cover per reservoir |
 | `table_6_compliance.csv` | `02_tests.R` | native vegetation in the APP band by reservoir (Table 7) |
 | `cadastral_summary.csv` | `02_tests.R` | holding-level deficit and 2008 to 2024 transition |
+| `definition_checks.csv` | `02_tests.R` | native non-forest vegetation, 30% threshold, declared APP in the control band, distinct holdings, registry coverage |
+| `power_check.csv` | `02_tests.R` | minimum detectable effect of the signed-rank tests |
 | `table_S4_rda.csv` | `04_redundancy_analysis.R` | variation partitioning |
+| `table_S4_rda_clr.csv` | `04_redundancy_analysis.R` | the same partitioning on centred log-ratios |
 | `cross_boundary_share.csv` | `05_reservoir_characteristics.R` | share of each band outside Rio de Janeiro |
+| `neighbour_overlap.csv` | `05_reservoir_characteristics.R` | control band of one reservoir inside the APP band or water of a neighbour |
+| `watercourse_app_control.csv` | `05_reservoir_characteristics.R` | control band within 30 m of a mapped watercourse |
 | `table_S1_class_crosswalk.csv` | supplied | MapBiomas legend to the five analytical classes |
 
 `table_S1_class_crosswalk.csv` is supplied rather than generated: it is the

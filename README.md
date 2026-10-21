@@ -1,11 +1,13 @@
-# Landscape dynamics and conservation policy effectiveness in reservoir riparian buffers: fourteen reservoirs under Brazil’s Forest Code, 1985 to 2024
+# Landscape dynamics and conservation policy effectiveness in reservoir riparian buffers
 
+Fourteen reservoirs under Brazil's Forest Code, 1985 to 2024.
 
 Data, code, figures and manuscript files for the article submitted to *Land*
 (MDPI). Every value reported in the manuscript and in the supplementary material
 can be recomputed from this repository.
 
-- Repository: (https://github.com/manaciff/Nacif_et_al_Land_Landscape_dynamics_and_conservation_policy_effectiveness_in_reservoir_riparian_buff.git)
+- Repository: https://github.com/manaciff/Nacif_et_al_Land_Landscape_dynamics_and_conservation_policy_effectiveness_in_reservoir_riparian_buff
+- Archived release: [Zenodo DOI, to be added when the release is archived]
 
 ---
 
@@ -40,11 +42,13 @@ fragmentation literature and carries no legal status.
 | Without the three reservoirs impounded during the series | 0.44 pp (95% CI −1.12 to 2.45; p = 0.594) |
 | Forest gain after the reform | significant in all four bands, 1.76 to 3.68 pp per decade |
 | Distance band, partial RDA | adjusted R² = 0.241, p < 0.001 |
-| Band × period interaction, partial RDA | adjusted R² = −0.0004 |
+| Band × period interaction, partial RDA | adjusted R² = −0.0004 (p between 0.82 and 1.00, depending on the vegan version) |
+| Same partition on centred log-ratios | band adjusted R² = 0.179, p < 0.001; band × period −0.0009 (p between 0.96 and 1.00, depending on the vegan version) |
+| Minimum detectable effect at 80% power | 3.45 pp for the 2024 coefficient; 3.75 pp per decade for the triple difference |
 | Median native-vegetation deficit in the APP band | 77.4% by reservoir; 95.6% by holding record |
 | APP band within holdings already anthropic in 2008 | 51.0% |
 | APP band covered by a declared APP in the registry | 5.3% |
-| Cleared after the 22 July 2008 cut-off | 1.4%, that is 67.9 ha in 49 of 199 holding records |
+| Cleared after the 22 July 2008 cut-off | 1.4%, that is 67.9 ha in 49 of 199 holding records (46 of 195 distinct holdings) |
 
 The divergence between the bands follows the reform in time, but its magnitude
 is not distinguishable from zero and depends on reservoirs whose margins changed
@@ -95,7 +99,11 @@ optional:
   layer *Massas d'Água*, and from the INEA basin layer at 1:50,000. With the IBGE
   state boundary (2024) it also rebuilds `results/cross_boundary_share.csv`, on
   the same 30 m grid and masks as script 01; the band areas it obtains are
-  checked against `data/composition_series.csv` before anything is written.
+  checked against `data/composition_series.csv` before anything is written. It
+  also writes `results/neighbour_overlap.csv`, the part of each control band
+  that falls in the APP band or the water of a neighbouring reservoir, and,
+  with the ANA drainage base (`FILE_BHO`), `results/watercourse_app_control.csv`,
+  the part of each control band within 30 m of a mapped watercourse.
   Set `DIR_VECTOR`, `FILE_BASINS` and `FILE_STATE` if the layers are not found
   automatically.
 
@@ -209,6 +217,16 @@ water surface is removed from every band, because the APP is the strip of land
 around the reservoir. Masks are built once per reservoir and reused across the
 eight benchmarks, so band definitions are identical over time.
 
+**The control band is outside the reservoir APP, not outside every APP.** It
+is crossed by watercourses whose margins are APPs: in the seven reservoirs of
+the Paraíba do Sul basin covered by the ANA drainage base, 10.3% to 16.7% of the
+control band lies within 30 m of a mapped watercourse
+(`results/watercourse_app_control.csv`), and across the fourteen reservoirs,
+declared APP covers 3.9% of its land area (`results/definition_checks.csv`). At Paracambi and Pereira
+Passos, and at Santana and Vigário, the control band of one reservoir reaches
+the APP band of the other over 0.7% to 1.9% of its area
+(`results/neighbour_overlap.csv`). Both bias the differential toward zero.
+
 **Four outlines stop at the state line.** At Anta, Funil, Ilha dos Pombos and
 Rosal the outline covers only the water surface inside Rio de Janeiro, and the
 bands, which were not clipped at the state line, are measured from that cut on
@@ -225,7 +243,7 @@ the change in the water share of the innermost band.
 counts cells outside the analysis mask in the adjacency denominator, which treats
 the frame of the window as class edge. At 30 m the APP band is 3.3 cells wide, so
 nearly every forest cell touches that frame. Under the default, Fontes Nova
-returns −1.04, outside the range of the index, for a band that is 88.4% forest.
+returns −1.08 in 2024, outside the range of the index, for a band that is 88.4% forest.
 `clumpy_no_frame()` computes the index from its definition with the frame
 excluded. Table S2 reports the difference between the two forms, and
 `results/clumpy_default_trend.csv` the trend under the default. The seven other
@@ -258,24 +276,38 @@ Permutation p values carry Monte Carlo error of about 0.003 near p = 0.05 at
 
 The published values were computed under R [version ...] with vegan [version
 ...]. On 19 October 2026, scripts 02, 03 and 04 were rerun under R 4.3.3 on
-Ubuntu 24.04 (ggplot2 3.4.4, patchwork 1.2.0, ragg 1.2.7, vegan 2.6-4,
-permute 0.9-7, sf 1.0-15, terra 1.7-65). Every file in `results/` and every
-figure was reproduced without change, with one exception: the permutation p
-value of the band × period term of the redundancy analysis, which is 1.0000 in
+Ubuntu 24.04 (ggplot2 3.4.4, patchwork 1.2.0, ragg 1.2.7, vegan 2.6-4, permute
+0.9-7, sf 1.0-15, terra 1.7-65). Every file in `results/` and every figure was
+reproduced without change, with one exception: the permutation p value of the
+band × period term of the redundancy analysis, which is 1.0000 in
 `table_S4_rda.csv` and 0.8198 under vegan 2.6-4. Its adjusted R² (−0.0004) and
-the conclusion do not change.
+the conclusion do not change. On 21 October 2026, scripts 02, 04 and 05 were
+rerun in the same environment after the additions described below; the same term
+of the partition on centred log-ratios gives p = 0.9594 there and 1.0000 in
+`table_S4_rda_clr.csv`.
+
+Two checks were added during revision. `02_tests.R` estimates by simulation the
+minimum detectable effect of the signed-rank test (`results/power_check.csv`):
+3.45 pp for the 2024 coefficient and 3.75 pp per decade for the triple
+difference at 80% power. `04_redundancy_analysis.R` repeats the variation
+partitioning on centred log-ratios, after multiplicative replacement of zeros
+(`results/table_S4_rda_clr.csv`), as a check on the choice of the Hellinger
+transformation.
 
 `docs/AUDITORIA_2026-08-29.md` lists every value that changed in the audit of
 29 August 2026, what it was, and which file it now comes from.
 
 ## Use of generative artificial intelligence
 
-Claude (Anthropic) was used to assist in writing and debugging the R and Python
-scripts, in checking the agreement between the manuscript and the outputs of
-those scripts, and in revising the language of the manuscript. All analyses
-were executed with the scripts in this repository, and every reported value was
-taken from their outputs; the tool was not used to generate data. The authors
-reviewed all code and text and take full responsibility for them.
+Claude (Anthropic) assisted with four tasks: writing and debugging the R and
+Python scripts; checking agreement between the manuscript and the outputs of
+those scripts; locating and checking sources for specific factual statements;
+and revising the language of the manuscript. Every analysis was run with the
+scripts in this repository, every reported value was taken from their outputs,
+and the tool did not generate data. The scripts were rerun in an independent
+computing environment (see Reproducibility notes), and the authors checked
+every reference against its original source. The authors reviewed all code and
+text and take full responsibility for them.
 
 ---
 

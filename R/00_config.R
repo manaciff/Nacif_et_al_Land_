@@ -65,6 +65,29 @@ first_existing <- function(...) {
   if (length(found)) normalizePath(found[1], mustWork = FALSE) else NA_character_
 }
 
+#' First folder among the candidates that holds the given file. A folder that
+#' merely exists is not enough: data/rasters and data/vectors exist in every
+#' copy of the repository because they hold a README.
+first_holding <- function(file, ...) {
+  candidates <- unlist(list(...))
+  found <- candidates[file.exists(file.path(candidates, file))]
+  if (length(found)) normalizePath(found[1], mustWork = FALSE) else NA_character_
+}
+
+#' Path rel (a file or a folder) under start or under the first folder above it
+#' that contains it. Returns NA if none is found within ten levels.
+find_upwards <- function(start, rel) {
+  d <- normalizePath(start, mustWork = FALSE)
+  for (i in 1:10) {
+    f <- file.path(d, rel)
+    if (file.exists(f)) return(f)
+    parent <- dirname(d)
+    if (identical(parent, d)) break
+    d <- parent
+  }
+  NA_character_
+}
+
 # ----------------------------------------------------------- analysis root (R)
 # Order of precedence: an already defined variable, then here(), then the
 # folder of the script itself, then the first folder above the working
@@ -115,22 +138,30 @@ message("Repository root: ", REPO_ROOT)
 # ------------------------------------------------------- spatial input layers
 # Resolved from a list of candidate locations rather than from a single fixed
 # path, so the code runs whether the data sit in the repository, inside data/,
-# or in a local copy, without anyone editing the script.
+# or in a local copy, without anyone editing the script. The last candidate of
+# each list is the folder of the research repository in which the layers were
+# prepared, looked for above the analysis folder.
+# A folder is accepted only if it holds the layer of the first reservoir.
 # A path set by the user before sourcing this file takes precedence.
 if (!exists("DIR_RASTER") || is.na(DIR_RASTER))
-DIR_RASTER <- first_existing(
+DIR_RASTER <- first_holding("Anta_ext_2024.tif",
   file.path(REPO_ROOT, "rasters"),
   file.path(DIR_DATA, "rasters"),
-  file.path(PROJECT_ROOT, "rasters"))
+  file.path(PROJECT_ROOT, "rasters"),
+  find_upwards(PROJECT_ROOT, file.path("03_Raster_MapBiomas_Originais",
+                                       "MapBiomas_Reservatorios_RJ")))
 
 if (!exists("DIR_VECTOR") || is.na(DIR_VECTOR))
-DIR_VECTOR <- first_existing(
+DIR_VECTOR <- first_holding("Anta.shp",
   file.path(REPO_ROOT, "vectors"),
   file.path(DIR_DATA, "vectors"),
-  file.path(PROJECT_ROOT, "vectors"))
+  file.path(PROJECT_ROOT, "vectors"),
+  find_upwards(PROJECT_ROOT, "12_Vetores_Reservatorios"))
 
 FILE_CADASTRE_APP <- first_existing(
   file.path(REPO_ROOT, "08_Dados_GIS_Auxiliares", "APPS", "APPS_1.shp"),
+  find_upwards(PROJECT_ROOT, file.path("08_Dados_GIS_Auxiliares", "APPS",
+                                       "APPS_1.shp")),
   file.path(DIR_DATA, "cadastral", "app_declarada.shp"))
 
 if (!exists("FILE_CADASTRE") || is.na(FILE_CADASTRE))

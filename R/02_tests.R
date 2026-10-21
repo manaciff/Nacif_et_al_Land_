@@ -15,6 +15,9 @@
 #   sensitivity.csv            sensitivity to the reservoir set
 #   table_S2_boundary_effect.csv  Table S2 of the supplementary material
 #   table_S3_by_reservoir.csv  Table S3 of the supplementary material
+#   power_check.csv            minimum detectable effect of the signed-rank tests
+#   definition_checks.csv      native non-forest vegetation, 30% threshold,
+#                              declared APP in the control band
 #   table_2_forest_cover.csv   Table 2 of the main text
 #   band_composition_2024.csv  band composition in 2024, quoted in Section 3.1
 #   table_6_compliance.csv     Table 6 of the main text
@@ -627,5 +630,118 @@ write.csv(cadastral, file.path(DIR_RESULTS, "cadastral_summary.csv"),
 
 cat("\n=== CADASTRAL MODULE ===\n")
 print(cadastral, row.names = FALSE)
+
+# =============================================================================
+# STATISTICAL POWER (added during revision)
+# =============================================================================
+# With fourteen paired units, a non-significant result says little unless the
+# effect the design could have detected is known. Power of the signed-rank test
+# is estimated by simulation: the observed values are centred on their median,
+# so that the null hypothesis holds, a shift delta is added, and fourteen values
+# are drawn with replacement. The share of draws with p < 0.05 is the power at
+# that shift, and the minimum detectable effect is the smallest shift with a
+# power of at least 0.8. The same draws are reused for every shift, so the power
+# curve is monotone up to simulation error.
+# The signed-rank p value is computed directly, with the normal approximation
+# and tie correction that wilcox.test(exact = FALSE, correct = FALSE) uses, so
+# that the 400,000 tests run in seconds; the result is identical.
+signed_rank_p <- function(x) {
+  x <- x[x != 0]
+  n <- length(x)
+  if (n == 0) return(1)
+  r <- rank(abs(x))
+  v <- sum(r[x > 0])
+  ties <- rle(sort(abs(x)))$lengths
+  sigma <- sqrt(n * (n + 1) * (2 * n + 1) / 24 - sum(ties^3 - ties) / 48)
+  if (sigma == 0) return(1)
+  2 * pnorm(-abs((v - n * (n + 1) / 4) / sigma))
+}
+power_at <- function(x0, idx, d) mean(apply(idx, 1, function(i) signed_rank_p(x0[i] + d) < 0.05))
+# Coarse grid in steps of 0.5, then steps of 0.05 inside the interval where the
+# power first reaches 0.8; power rises with the shift, so this finds the same
+# value as a full grid in steps of 0.05.
+power_check_one <- function(label, x, n_sim = 2000) {
+  x0 <- x - median(x)
+  set.seed(SEED)
+  idx <- matrix(sample.int(length(x0), n_sim * length(x0), replace = TRUE), nrow = n_sim)
+  coarse <- seq(0, 10, by = 0.5)
+  pc <- sapply(coarse, function(d) power_at(x0, idx, d))
+  k <- which(pc >= 0.8)[1]
+  fine <- seq(coarse[k - 1], coarse[k], by = 0.05)
+  pf <- sapply(fine, function(d) power_at(x0, idx, d))
+  data.frame(quantity = label, n = length(x), observed_median = round(median(x), 2),
+             mde_80 = fine[which(pf >= 0.8)[1]],
+             power_at_observed = round(power_at(x0, idx, round(abs(median(x)) / 0.05) * 0.05), 2))
+}
+power_rows <- list(
+  power_check_one("Event-study coefficient, 2024 (pp)", coef_2024[RES]),
+  power_check_one("Triple difference (pp per decade)", d_post - d_pre))
+power_check <- do.call(rbind, power_rows)
+write.csv(power_check, file.path(DIR_RESULTS, "power_check.csv"), row.names = FALSE)
+cat("\n=== STATISTICAL POWER ===\n")
+print(power_check, row.names = FALSE)
+
+# =============================================================================
+# CHECKS ON THE DEFINITIONS (added during revision)
+# =============================================================================
+# Four quantities that bound how the cadastral results are read.
+# 1. The deficit is the complement of forest cover, so native non-forest
+#    vegetation (wetland, grassland, herbaceous sandbank) counts as deficit. Its
+#    share of the APP band shows how much that choice matters.
+# 2. The 25% ecological threshold against the value of about 30% reported for
+#    the Atlantic Forest.
+# 3. The control band lies outside the reservoir APP but crosses the APPs of
+#    watercourses. The declared APP inside it is a lower bound on that overlap,
+#    because declarations are incomplete.
+# 4. Distinct holdings behind the 199 holding records, and the share of the
+#    APP band that falls inside them. Declared holdings can overlap, so that
+#    share is an upper bound on the part of the APP band the registry covers.
+native_pct <- function(z) 100 * (z$Forest_ha + z$Non_forest_natural_ha) / z$Land_area_ha
+nonforest_pct <- 100 * zres$Non_forest_natural_ha / zres$Land_area_ha
+declared <- read.csv(file.path(DIR_DATA, "declared_app_zones.csv"),
+                     check.names = FALSE, stringsAsFactors = FALSE)
+comp_all <- read.csv(file.path(DIR_DATA, "composition_series.csv"),
+                     stringsAsFactors = FALSE)
+ctrl_2024 <- unique(comp_all[comp_all$Band == BAND_CONTROL & comp_all$Year == 2024,
+                             c("Reservoir", "Land_area_ha")])
+control_land <- sum(ctrl_2024$Land_area_ha)
+declared_in_control <- sum(declared$`Outside the APP band (ha)`)
+
+checks <- data.frame(
+  quantity = c(
+    "Native non-forest vegetation in the APP band, median across reservoirs (% of land)",
+    "Native non-forest vegetation in the APP band, maximum across reservoirs (% of land)",
+    "Reservoir with the maximum",
+    "Deficit with native non-forest vegetation counted as native, reservoir median (%)",
+    "Deficit with native non-forest vegetation counted as native, holding-record median (%)",
+    "Reservoirs reaching 30% forest cover in the APP band",
+    "Holding records reaching 30% forest cover (%)",
+    "Declared APP in the control band (ha)",
+    "Land area of the control band, 2024 (ha)",
+    "Declared APP in the control band (% of its land area)",
+    "Distinct holdings among the holding records",
+    "Distinct holdings with clearing after the cut-off",
+    "APP-band land inside holding records (ha)",
+    "APP-band land inside holding records (% of the APP-band land)"),
+  value = c(
+    round(median(nonforest_pct), 1),
+    round(max(nonforest_pct), 1),
+    display(zres$Reservoir[which.max(nonforest_pct)]),
+    round(median(100 - native_pct(zres)), 1),
+    round(median(100 - native_pct(zprop)), 1),
+    sum(zres$Forest_pct >= 30),
+    round(100 * mean(zprop$Forest_pct >= 30), 1),
+    round(declared_in_control, 1),
+    round(control_land, 1),
+    round(100 * declared_in_control / control_land, 1),
+    length(unique(transitions$Holding_id)),
+    length(unique(transitions$Holding_id[transitions$Cleared_after_2008_ha > 0])),
+    round(land_classified, 1),
+    round(100 * land_classified / sum(zres$Land_area_ha), 1)),
+  stringsAsFactors = FALSE)
+write.csv(checks, file.path(DIR_RESULTS, "definition_checks.csv"), row.names = FALSE)
+
+cat("\n=== CHECKS ON THE DEFINITIONS ===\n")
+print(checks, row.names = FALSE)
 
 cat("\nComplete. Output written to ", DIR_RESULTS, "\n", sep = "")

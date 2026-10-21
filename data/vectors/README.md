@@ -13,7 +13,12 @@ following layers, none of which is redistributed here.
   1:50,000 (INEA, GeoINEA), used by script 05.
 - `rj_uf2024.shp`, the boundary of the State of Rio de Janeiro (IBGE, 2024),
   used by script 05 to measure the share of each band outside the state.
+- `bho_trechos_reservatorios.shp`, the drainage segments of the ANA Base
+  Hidrográfica Ottocodificada of the Paraíba do Sul (release of 3 April 2017)
+  whose extent overlaps a reservoir window, used by script 05. Script 05 also
+  reads the full layer (`GEOFT_BHO_TRECHO_DRENAGEM.shp`) if the extract is
+  absent.
 
-Place them here, or point `DIR_VECTOR`, `FILE_BASINS` and `FILE_STATE` at their
+Place them here, or point `DIR_VECTOR`, `FILE_BASINS`, `FILE_STATE` and `FILE_BHO` at their
 locations, only if you intend to run scripts 01 or 05. The extracted series in
 `data/` are sufficient to reproduce every result in the manuscript without them.

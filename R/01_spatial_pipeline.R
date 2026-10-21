@@ -189,7 +189,7 @@ write.csv(reservoir_areas, file.path(DIR_DATA, "reservoir_areas.csv"),
 # calculate_lsm leaves the index at its default. The correction is therefore
 # implemented here, from the definition of the index, and it replaces the value
 # the package returns. Verification: under the default, Fontes Nova returns
-# -1.04 in the APP band, outside the range of an index defined on [-1, 1],
+# -1.08 in the APP band in 2024, outside the range of an index defined on [-1, 1],
 # for a band that is 88.4% forest; under the implementation below it returns
 # 0.85, and no value in the series falls outside the range.
 #
